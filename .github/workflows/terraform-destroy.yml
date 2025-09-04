@@ -1,0 +1,32 @@
+# .github/workflows/terraform-destroy.yml
+name: Terraform Destroy
+
+permissions:
+  id-token: write # Требуется для аутентификации в Yandex.Cloud
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # ГЛАВНЫЙ ФИКС: Исправлено имя action на yc-actions/yc-auth
+      - name: Authenticate to Yandex.Cloud
+        uses: yc-actions/yc-auth@v1.2
+        with:
+          yc_sa_id: ${{ secrets.YC_SA_ID }}
+      
+      - name: Terraform Init and Destroy
+        env:
+          YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
+          YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
+        run: |
+          terraform init
+          terraform destroy -auto-approve -var="subnet_id=${{ secrets.YC_SUBNET_ID }}"

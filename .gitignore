@@ -1,0 +1,13 @@
+# Файл с вашими секретными переменными
+terraform.tfvars
+
+# Файлы состояния Terraform
+terraform.tfstate
+terraform.tfstate.backup
+
+# Скрытые папки и файлы Terraform
+.terraform/
+.terraform.lock.hcl
+
+# Локальные плагины Terraform
+terraform.d/
